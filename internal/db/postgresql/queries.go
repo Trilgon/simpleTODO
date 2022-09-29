@@ -13,4 +13,5 @@ const (
 	markUndone    = `UPDATE notes SET is_done = false, end_date = null WHERE id = $1;`
 	getById       = `SELECT * FROM notes WHERE id = $1;`
 	getByEmail    = `SELECT * FROM notes WHERE email = $1;`
+	getByText     = `SELECT * FROM notes WHERE title LIKE $1 OR text LIKE $1`
 )

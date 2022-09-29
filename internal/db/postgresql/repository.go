@@ -140,6 +140,11 @@ func (p *TodoRepository) GetByEmail(email string) ([]models.Note, error) {
 }
 
 func (p *TodoRepository) SearchByText(text string) ([]models.Note, error) {
-	//TODO implement me
-	panic("implement me")
+	notes := make([]models.Note, 0)
+	likeParam := "%" + text + "%"
+	err := p.db.Select(&notes, getByText, likeParam)
+	if err != nil {
+		return nil, fmt.Errorf("failed to find any notes that contains text in title or text. Error: %s", err)
+	}
+	return notes, nil
 }
