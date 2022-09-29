@@ -26,6 +26,7 @@ func GetDB() (*sqlx.DB, error) {
 		return nil, fmt.Errorf("failed to ping db. Error: %s", err)
 	}
 	isExists = true
+	instance = db
 	mutex.Unlock()
 	return instance, nil
 }

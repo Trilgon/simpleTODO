@@ -53,7 +53,7 @@ func (p *TodoRepository) SignIn(email, encPassword string) error {
 	if id < 1 {
 		return fmt.Errorf("user doesn't exists")
 	}
-	_, err = p.db.Exec(signIn, id)
+	_, err = p.db.Exec(signIn, email)
 	if err != nil {
 		return fmt.Errorf("failed to mark user as logged. Error: %s", err)
 	}
@@ -95,24 +95,35 @@ func (p *TodoRepository) DeleteNote(id int) error {
 }
 
 func (p *TodoRepository) UpdateNote(id int, title, text string) error {
-	_, err := p.db.Exec(updateNote, title, text, id)
+	res, err := p.db.Exec(updateNote, title, text, id)
 	if err != nil {
 		return fmt.Errorf("failed to update note. Error: %s", err)
+	}
+	affected, _ := res.RowsAffected()
+	if affected < 1 {
+		return fmt.Errorf("note with id = %d doesn't exist", id)
 	}
 	return nil
 }
 
 func (p *TodoRepository) MarkNote(id int, state bool) error {
-	_, err := p.db.Exec(markNote, state, id)
-	if err != nil {
-		return fmt.Errorf("failed to mark note. Error: %s", err)
+	if state {
+		_, err := p.db.Exec(markDone, time.Now().Format("2006-01-02 15:04:05"), id)
+		if err != nil {
+			return fmt.Errorf("failed to mark note. Error: %s", err)
+		}
+	} else {
+		_, err := p.db.Exec(markUndone, id)
+		if err != nil {
+			return fmt.Errorf("failed to mark note. Error: %s", err)
+		}
 	}
 	return nil
 }
 
 func (p *TodoRepository) GetById(id int) (*models.Note, error) {
 	note := models.Note{}
-	err := p.db.Get(&note, getById)
+	err := p.db.Get(&note, getById, id)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get note with id = %d. Error: %s", id, err)
 	}
