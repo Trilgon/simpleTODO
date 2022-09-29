@@ -1,0 +1,5 @@
+{
+  "db": {
+    "connection" : "user=test password=testAdmin host=localhost dbname=simple_todo sslmode=disable"
+  }
+}
