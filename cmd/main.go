@@ -2,7 +2,7 @@ package main
 
 import (
 	"simpleTODO/internal/config"
-	"simpleTODO/internal/db/postgresql"
+	"simpleTODO/internal/service"
 )
 
 func main() {
@@ -10,12 +10,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	rep, err := postgresql.NewTodoRepository()
+	srv, err := service.NewTodoServer()
 	if err != nil {
 		panic(err)
 	}
-	err = rep.SignUp("test@test.com", "enc_pas")
-	if err != nil {
-		panic(err)
-	}
+	srv.Run()
 }
