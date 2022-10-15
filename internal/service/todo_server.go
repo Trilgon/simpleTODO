@@ -3,7 +3,10 @@ package service
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/locales/en"
+	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
+	enTranslations "github.com/go-playground/validator/v10/translations/en"
 	"github.com/spf13/viper"
 	"simpleTODO/internal/db"
 	"simpleTODO/internal/db/postgresql"
@@ -12,6 +15,7 @@ import (
 type TodoServer struct {
 	rep       db.Repository
 	validator *validator.Validate
+	ts        ut.Translator
 }
 
 func NewTodoServer() (*TodoServer, error) {
@@ -24,6 +28,10 @@ func NewTodoServer() (*TodoServer, error) {
 	dbRep := db.Repository(rep)
 	srv.rep = dbRep
 	srv.validator = val
+	eng := en.New()
+	uni := ut.New(eng, eng)
+	srv.ts, _ = uni.GetTranslator("en")
+	_ = enTranslations.RegisterDefaultTranslations(srv.validator, srv.ts)
 	return &srv, nil
 }
 
@@ -35,7 +43,7 @@ func (s *TodoServer) Run() error {
 		api.GET("/get_by_id", s.GetById)
 		api.GET("/get_by_email", s.GetByEmail)
 		api.GET("/search_by_text", s.SearchByText)
-		api.GET("/mark_note", s.MarkNote)
+		api.POST("/mark_note", s.MarkNote)
 		api.POST("/sign_up", s.SignUp)
 		api.POST("sign_in", s.SignIn)
 		api.POST("sign_out", s.SignOut)
