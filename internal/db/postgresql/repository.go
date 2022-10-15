@@ -3,6 +3,7 @@ package postgresql
 import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
+	"github.com/lib/pq"
 	"simpleTODO/internal/models"
 	"simpleTODO/pkg/db/postgresql"
 	"time"
@@ -75,21 +76,27 @@ func (p *TodoRepository) SignOut(email string) error {
 	return nil
 }
 
-func (p *TodoRepository) AddNote(email, title, text string) (int, error) {
+func (p *TodoRepository) AddNote(email, title string, text *string) (int, error) {
 	currentDt := time.Now()
 	var id int
-	err := p.db.QueryRow(addNote, email, title, text, currentDt.Format("2006-01-02 15:04:05")).
-		Scan(&id)
+	var err error
+	if text != nil {
+		err = p.db.QueryRow(addNote, email, title, *text, currentDt.Format("2006-01-02 15:04:05")).
+			Scan(&id)
+	} else {
+		err = p.db.QueryRow(addNote, email, title, nil, currentDt.Format("2006-01-02 15:04:05")).
+			Scan(&id)
+	}
 	if err != nil {
 		return -1, fmt.Errorf("failed to add note. Error: %s", err)
 	}
 	return id, nil
 }
 
-func (p *TodoRepository) DeleteNote(id int) error {
-	_, err := p.db.Exec(deleteNote, id)
+func (p *TodoRepository) DeleteNotes(id []int) error {
+	_, err := p.db.Exec(deleteNotes, pq.Array(id))
 	if err != nil {
-		return fmt.Errorf("failed to delete note. Error: %s", err)
+		return fmt.Errorf("failed to delete notes. Error: %s", err)
 	}
 	return nil
 }

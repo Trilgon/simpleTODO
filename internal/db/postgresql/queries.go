@@ -7,7 +7,7 @@ const (
 	signIn        = `UPDATE users SET is_authorized = true WHERE email = $1;`
 	signOut       = `UPDATE users SET is_authorized = false WHERE email = $1;`
 	addNote       = `INSERT INTO notes (email, title, text, start_date) VALUES ($1, $2, $3, $4) RETURNING id;`
-	deleteNote    = `DELETE FROM notes WHERE id = $1`
+	deleteNotes   = `DELETE FROM notes WHERE id IN $1`
 	updateNote    = `UPDATE notes SET title = $1, text = $2 WHERE id = $3;`
 	markDone      = `UPDATE notes SET is_done = true, end_date = $1 WHERE id = $2;`
 	markUndone    = `UPDATE notes SET is_done = false, end_date = null WHERE id = $1;`
