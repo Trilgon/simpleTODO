@@ -69,7 +69,7 @@ func (s *TodoServer) SignIn(ctx *gin.Context) {
 	err = s.validator.Struct(user)
 	if err != nil {
 		s.catchErrGin(ctx, http.StatusBadRequest,
-			"SignIn error, failed to validate body", utils.TranslateError(err, s.ts))
+			"SignIn error, failed to validate body.", utils.TranslateError(err, s.ts))
 		return
 	}
 	err = s.rep.SignIn(user.Email, user.Password)

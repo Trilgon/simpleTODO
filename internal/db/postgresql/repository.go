@@ -1,6 +1,7 @@
 package postgresql
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
@@ -101,8 +102,14 @@ func (p *TodoRepository) DeleteNotes(id []int) error {
 	return nil
 }
 
-func (p *TodoRepository) UpdateNote(id int, title, text string) error {
-	res, err := p.db.Exec(updateNote, title, text, id)
+func (p *TodoRepository) UpdateNote(id int, title string, text *string) error {
+	var res sql.Result
+	var err error
+	if text != nil {
+		res, err = p.db.Exec(updateNote, title, *text, id)
+	} else {
+		res, err = p.db.Exec(updateNote, title, nil, id)
+	}
 	if err != nil {
 		return fmt.Errorf("failed to update note. Error: %s", err)
 	}

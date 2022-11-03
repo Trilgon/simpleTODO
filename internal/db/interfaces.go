@@ -8,7 +8,7 @@ type Repository interface {
 	SignOut(email string) error
 	AddNote(email, title string, text *string) (int, error)
 	DeleteNotes(id []int) error
-	UpdateNote(id int, title, text string) error
+	UpdateNote(id int, title string, text *string) error
 	MarkNote(id int, state bool) error
 	GetById(id int) (*models.Note, error)
 	GetByEmail(email string) ([]models.Note, error)

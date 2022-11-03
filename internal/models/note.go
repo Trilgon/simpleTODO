@@ -1,8 +1,8 @@
 package models
 
 type Note struct {
-	Id        int     `json:"id" db:"id" validate:"required, gt=0"`
-	Email     string  `json:"email" db:"email" validate:"required"`
+	Id        int     `json:"id" db:"id" validate:"required,gt=0"`
+	Email     string  `json:"email" db:"email" validate:"required,email"`
 	Title     string  `json:"title" db:"title" validate:"required"`
 	Text      *string `json:"text" db:"text"`
 	StartDate string  `json:"start_date" db:"start_date" validate:"required"`
