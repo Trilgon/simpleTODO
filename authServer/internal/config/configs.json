@@ -1,0 +1,8 @@
+{
+  "db": {
+    "connection" : "user=auth password=authAdmin host=localhost dbname=simple_todo sslmode=disable"
+  },
+  "server": {
+    "host": "localhost:8081"
+  }
+}
